@@ -1,4 +1,4 @@
-# kSphere — Inventory & Order Management System
+# NexStock — Inventory & Order Management System
 
 A full-stack inventory, order, and customer management platform. FastAPI + PostgreSQL backend, a premium React/Tailwind frontend with light/dark themes and a command palette, all containerized with Docker Compose.
 
