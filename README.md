@@ -4,6 +4,14 @@ A full-stack inventory, order, and customer management platform. FastAPI + Postg
 
 This is the merged project: the original **Nexus** backend (still the same working API) paired with the redesigned **kSphere** frontend that replaced the earlier UI.
 
+## Live Demo
+
+- **App:** [nex-stock-nine.vercel.app](https://nex-stock-nine.vercel.app/)
+- **API:** [nexstock-backend-plff.onrender.com](https://nexstock-backend-plff.onrender.com/)
+- **API docs (Swagger):** [nexstock-backend-plff.onrender.com/docs](https://nexstock-backend-plff.onrender.com/docs)
+
+> The backend is on Render's free tier, which sleeps after 15 minutes of inactivity. If the app looks slow or empty on first load, give it 30–60 seconds and refresh — that's the backend waking up, not a bug.
+
 ## Tech Stack
 
 | Layer | Technology |
@@ -12,8 +20,9 @@ This is the merged project: the original **Nexus** backend (still the same worki
 | Frontend | React 18 + Vite + Tailwind CSS |
 | Database | PostgreSQL 16 |
 | Containerization | Docker + Docker Compose |
+| Hosting | Render (backend + database) · Vercel (frontend) |
 
-## Quick start
+## Quick start (local)
 
 ```bash
 docker compose up --build
@@ -30,7 +39,7 @@ The frontend works immediately even before any data exists — every page falls 
 ## Project structure
 
 ```
-ksphere/
+NexStock/
 ├── backend/                 FastAPI + SQLAlchemy + PostgreSQL
 │   ├── app/
 │   │   ├── main.py          App entrypoint, CORS, dashboard stats endpoint
@@ -83,7 +92,7 @@ ksphere/
 | POST/GET/DELETE | `/orders/`, `/orders/{id}` | Order placement, retrieval, cancellation |
 | GET | `/dashboard/stats` | Summary stats + low-stock list |
 
-Full interactive docs at `/docs` once the backend is running.
+Full interactive docs at [`/docs`](https://nexstock-backend-plff.onrender.com/docs).
 
 ## Local development without Docker
 
@@ -108,18 +117,31 @@ VITE_API_URL=http://localhost:8000
 
 ## Deployment
 
-### Backend → Railway
-1. Push to GitHub, create a Railway project from the repo, root directory `backend`
-2. Add a PostgreSQL plugin, set `DATABASE_URL=${{Postgres.DATABASE_URL}}`
-3. Note the generated backend URL
+This project is deployed with **Render** (backend + database) and **Vercel** (frontend).
+
+### Backend + Database → Render
+1. Push to GitHub
+2. Render → **New → PostgreSQL** (Free tier) → note the **Internal Database URL**
+3. Render → **New → Web Service** → connect the repo
+   - Root Directory: `backend`
+   - Runtime: Docker (auto-detected from `backend/Dockerfile`)
+   - Same region as the database
+   - Environment variable: `DATABASE_URL` = the Internal Database URL from step 2
+4. Deploy — Render gives you a URL like `https://nexstock-backend-plff.onrender.com`
+
+> Free-tier Postgres on Render expires after a limited period (30–90 days depending on current terms) and free web services sleep after 15 minutes of inactivity. Fine for demos; upgrade for anything persistent.
 
 ### Frontend → Vercel
-1. Import the repo, root directory `frontend`
-2. Framework preset: Vite
-3. Environment variable: `VITE_API_URL=https://YOUR-BACKEND-URL.up.railway.app`
+1. Import the repo
+2. Root Directory: `frontend`
+3. Framework preset: Vite
+4. Environment variable: `VITE_API_URL=https://nexstock-backend-plff.onrender.com`
+5. Deploy
 
-### Docker Hub (backend image)
+**Note:** if Vercel's import screen offers to configure this as a multi-service project (because it also sees the `backend/` folder), explicitly set **Root Directory** to `frontend` before deploying — this project does not use Vercel's Services feature, since the backend runs on Render.
+
+### Docker Hub (backend image, optional)
 ```bash
-docker build -t YOUR_DOCKERHUB_USERNAME/ksphere-backend:latest ./backend
-docker push YOUR_DOCKERHUB_USERNAME/ksphere-backend:latest
+docker build -t YOUR_DOCKERHUB_USERNAME/nexstock-backend:latest ./backend
+docker push YOUR_DOCKERHUB_USERNAME/nexstock-backend:latest
 ```
