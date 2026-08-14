@@ -81,7 +81,7 @@ export function AppLayout({ children }) {
         {/* Logo */}
         <div className="h-14 flex items-center gap-2.5 px-4 border-b border-line flex-shrink-0">
           <div className="text-accent"><GlobeIcon /></div>
-          <span className="font-bold text-[15px] tracking-tight">kSphere</span>
+          <span className="font-bold text-[15px] tracking-tight">Stock</span>
           <span className="text-[9px] font-mono text-ink-muted ml-auto">IMS v2</span>
         </div>
 
